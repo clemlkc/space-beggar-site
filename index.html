@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Space Beggar</title>
+<meta name="description" content="Space Beggar, jeu d'exploration et de survie en pixel art : une station en panne, des planètes à piller, une galaxie à traverser avec trois gouttes d'essence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,600;62..125,800&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Mise en page : une coque de vaisseau. Bandeau HUD en haut, captures du jeu
+   en hublots à coins rivetés, sections empilées comme des modules. */
+@font-face {
+  font-family: "Wendy";
+  src: url("data:font/ttf;base64,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ABQAFQAWABcAGAAZABoAGwAcARABEQESARMBFAEVACMAJAAlACYAJwAoACkAKgArACwALQAsAC0ALgAvADAAMQAyADMANAA1ADYAOQA3ADgAOQA6AD4BFgBAARcBGAEZARoBGwEcAR0BHgEfASABIQEiASMBJAElASYBJwEoASkBKgErASwBLQEuAS8BMAExAF8BMgEzATQBNQE2ATcBOAAHRkwwMDIyaAdGTDBDMzloB0ZMMDAyNGgHRkwwMDIzaAdGTDAwMjVoB0ZMMDAyNmgHRkwwMDI3aAdGTDAwMjhoB0ZMMDAyRWgHRkwwMDJBaAdGTDAwMkJoB0ZMMDAyQ2gHRkwwMDJEaAdGTDAwMzhoB0ZMMDAzOWgHRkwwMDNBaAdGTDAwM0JoB0ZMMDAzQ2gHRkwwMDNEaAdGTDAwNUNoAAdGTDAwNjFoB0ZMMDA2MmgHRkwwMDYzaAdGTDAwNjRoB0ZMMDA2NWgHRkwwMDY2aAdGTDAwNjdoB0ZMMDA2OGgHRkwwMDY5aAdGTDAwNkFoB0ZMMDA2QmgHRkwwMDZDaAdGTDAwNkRoB0ZMMDA2RWgHRkwwMDZGaAdGTDAwNzBoB0ZMMDA3MWgHRkwwMDcyaAdGTDAwNzNoB0ZMMDA3NGgHRkwwMDc1aAdGTDAwNzZoB0ZMMDA3N2gHRkwwMDc4aAdGTDAwNzloB0ZMMDA3QWgAB0ZMMDBDNGgHRkwwMEQ2aAdGTDAwRENoB0ZMMDBFNGgHRkwwMEY2aAdGTDAwRkNoAA==") format("truetype");
+  font-display: swap;
+}
+:root {
+  --vide: #0b0e16;        /* le fond de l'espace */
+  --coque: #121925;       /* panneaux */
+  --coque-2: #182131;
+  --rivet: #2a3648;       /* traits, bordures */
+  --texte: #dbe3ec;
+  --pale: #8d9bb0;
+  --hud: #4fd8c4;         /* cyan du HUD en jeu */
+  --essence: #f2a53b;     /* bidon d'essence */
+  --cape: #cf4a2e;        /* la cape du mendiant */
+  --parchemin: #f2ddc1;   /* le bestiaire */
+  --encre: #3b2717;
+  --danger: #ff5a40;
+
+  --f-pixel: "Wendy", "Courier New", monospace;
+  --f-texte: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --f-donnee: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+
+  --pas-1: 0.5rem; --pas-2: 1rem; --pas-3: 1.5rem; --pas-4: 2.5rem; --pas-5: 4rem; --pas-6: 6rem;
+  --largeur: 72rem;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--vide);
+  color: var(--texte);
+  font-family: var(--f-texte);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-variation-settings: "wdth" 92;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; z-index: 10;
+  height: env(safe-area-inset-top, 0px); background: var(--vide);
+}
+a { color: var(--hud); }
+a:focus-visible, button:focus-visible, input:focus-visible + .bascule {
+  outline: 2px solid var(--essence); outline-offset: 3px;
+}
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+p { margin: 0; }
+
+.gouttiere {
+  max-width: var(--largeur);
+  margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* Ciel étoilé discret, tracé une fois au chargement */
+#ciel { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+
+/* ---------- Bandeau ---------- */
+.bandeau {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9;
+  background: color-mix(in srgb, var(--vide) 88%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--rivet);
+}
+.bandeau .gouttiere {
+  display: flex; align-items: center; gap: var(--pas-3);
+  padding-block: 0.7rem;
+}
+.marque {
+  font-family: var(--f-pixel); font-size: 1.6rem; line-height: 1;
+  color: var(--texte); text-decoration: none; letter-spacing: 0.04em;
+  display: flex; align-items: center; gap: 0.55rem;
+}
+.marque .pastille { width: 10px; height: 10px; background: var(--hud); box-shadow: 0 0 10px var(--hud); }
+.bandeau nav { display: flex; gap: var(--pas-3); margin-left: auto; flex-wrap: wrap; }
+.bandeau nav a {
+  font-family: var(--f-pixel); font-size: 1.15rem; color: var(--pale);
+  text-decoration: none; letter-spacing: 0.06em;
+}
+.bandeau nav a:hover { color: var(--hud); }
+@media (max-width: 760px) {
+  .bandeau nav { display: none; }
+}
+
+/* ---------- Hublot : cadre des captures ---------- */
+.hublot {
+  position: relative; margin: 0;
+  border: 2px solid var(--rivet);
+  background: var(--coque);
+  padding: 6px;
+}
+.hublot img { display: block; width: 100%; height: auto; max-width: 100%; }
+.hublot::before, .hublot::after {
+  content: ""; position: absolute; width: 14px; height: 14px; pointer-events: none;
+  border-color: var(--hud); border-style: solid;
+}
+.hublot::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+.hublot::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+.hublot figcaption {
+  font-family: var(--f-donnee); font-size: 0.75rem; color: var(--pale);
+  padding: 0.5rem 0.25rem 0.1rem; letter-spacing: 0.02em;
+}
+
+/* ---------- Ouverture ---------- */
+.ouverture { padding-block: var(--pas-5) var(--pas-4); }
+.ouverture .gouttiere { display: grid; gap: var(--pas-4); }
+.surtitre {
+  font-family: var(--f-donnee); font-size: 0.8rem; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--hud);
+}
+.ouverture h1 {
+  font-family: var(--f-pixel); font-weight: normal;
+  font-size: clamp(3.2rem, 11vw, 8.5rem); line-height: 0.82; letter-spacing: 0.02em;
+  margin-top: var(--pas-2);
+}
+.ouverture h1 .cape { color: var(--cape); }
+.these {
+  font-size: clamp(1.15rem, 2.2vw, 1.45rem); line-height: 1.45; max-width: 38ch;
+  margin-top: var(--pas-3); font-variation-settings: "wdth" 100;
+}
+.texte-ouverture { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--pas-4); align-items: end; }
+@media (max-width: 860px) { .texte-ouverture { grid-template-columns: minmax(0, 1fr); } }
+.actions { display: flex; flex-wrap: wrap; gap: var(--pas-2); }
+.bouton {
+  font-family: var(--f-pixel); font-size: 1.35rem; letter-spacing: 0.05em; line-height: 1;
+  text-decoration: none; padding: 0.85rem 1.3rem 0.75rem;
+  border: 2px solid var(--essence); color: var(--vide); background: var(--essence);
+  box-shadow: 4px 4px 0 var(--cape);
+  display: inline-flex; align-items: center; gap: 0.6rem;
+}
+.bouton:hover { transform: translate(-1px, -1px); box-shadow: 5px 5px 0 var(--cape); }
+.bouton.bientot { cursor: default; }
+.bouton.bientot::after {
+  content: ""; width: 0.55em; height: 0.55em; background: var(--vide);
+  animation: clignote 1.1s steps(1) infinite;
+}
+.bouton.bientot:hover { transform: none; box-shadow: 4px 4px 0 var(--cape); }
+@keyframes clignote { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .bouton.bientot::after { animation: none; } }
+.mention { font-family: var(--f-donnee); font-size: 0.75rem; color: var(--pale); margin-top: var(--pas-1); }
+
+/* ---------- Sections ---------- */
+section { padding-block: var(--pas-5); }
+.entete-section { display: grid; gap: var(--pas-1); margin-bottom: var(--pas-4); max-width: 46rem; }
+.entete-section h2 {
+  font-family: var(--f-pixel); font-weight: normal;
+  font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 0.95; letter-spacing: 0.02em;
+}
+.entete-section p { color: var(--pale); max-width: 60ch; }
+.trait-section { border: 0; border-top: 1px dashed var(--rivet); margin: 0; }
+
+/* Premier jour : une vraie suite d'étapes */
+.etapes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: var(--pas-2); counter-reset: etape; }
+@media (max-width: 980px) { .etapes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .etapes { grid-template-columns: minmax(0, 1fr); } }
+.etapes li {
+  counter-increment: etape; min-width: 0;
+  border-top: 3px solid var(--rivet); padding-top: var(--pas-2);
+  display: grid; gap: 0.4rem; align-content: start;
+}
+.etapes li::before {
+  content: "J+" counter(etape, decimal-leading-zero);
+  font-family: var(--f-donnee); font-size: 0.75rem; color: var(--hud); letter-spacing: 0.1em;
+}
+.etapes li:last-child { border-top-color: var(--essence); }
+.etapes h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 1.45rem; line-height: 1; letter-spacing: 0.03em; }
+.etapes p { font-size: 0.95rem; color: var(--pale); }
+.etapes strong { color: var(--texte); font-weight: 600; }
+.duo { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--pas-3); margin-top: var(--pas-4); }
+@media (max-width: 760px) { .duo { grid-template-columns: minmax(0, 1fr); } }
+
+/* Manifeste de la soute */
+.manifeste {
+  background: var(--coque); border: 1px solid var(--rivet); padding: var(--pas-3);
+  font-family: var(--f-donnee); font-size: 0.88rem; display: grid; gap: var(--pas-2); align-content: start;
+}
+.manifeste h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 1.4rem; color: var(--essence); letter-spacing: 0.04em; }
+.manifeste table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.manifeste td { padding: 0.45rem 0; border-bottom: 1px dotted var(--rivet); }
+.manifeste td:last-child { text-align: right; color: var(--hud); }
+.manifeste p { color: var(--pale); font-family: var(--f-texte); font-size: 0.92rem; }
+
+/* Planètes */
+.planetes { display: grid; gap: var(--pas-5); }
+.planete { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: var(--pas-4); align-items: center; }
+.planete:nth-child(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); }
+.planete:nth-child(even) .hublot { order: 2; }
+@media (max-width: 860px) {
+  .planete, .planete:nth-child(even) { grid-template-columns: minmax(0, 1fr); }
+  .planete:nth-child(even) .hublot { order: 0; }
+}
+.planete .fiche { display: grid; gap: var(--pas-2); min-width: 0; }
+.planete h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 2.3rem; line-height: 0.95; letter-spacing: 0.03em; }
+.planete .type { font-family: var(--f-donnee); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.desert .type { color: var(--essence); }
+.neige .type { color: #9fd3ff; }
+.foret .type { color: #9bd66a; }
+.planete ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.45rem; }
+.planete li { padding-left: 1.2rem; position: relative; color: var(--pale); font-size: 0.96rem; }
+.planete li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; background: var(--rivet); }
+.planete li strong { color: var(--texte); font-weight: 600; }
+
+/* Jauge de bruit : le moment interactif */
+.console {
+  background: var(--coque); border: 2px solid var(--rivet);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr);
+}
+@media (max-width: 980px) { .console { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+@media (max-width: 640px) { .console { grid-template-columns: minmax(0, 1fr); } }
+.console > div { padding: var(--pas-3); min-width: 0; display: grid; gap: var(--pas-2); align-content: start; }
+.console > div + div { border-left: 1px solid var(--rivet); }
+@media (max-width: 980px) {
+  .console > .commandes { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--rivet); }
+}
+@media (max-width: 640px) { .console > div + div { border-left: 0; border-top: 1px solid var(--rivet); } }
+.console h3 { font-family: var(--f-donnee); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--pale); }
+.cadran { display: grid; justify-items: center; gap: 0.3rem; }
+.cadran svg { width: min(220px, 100%); height: auto; }
+.cadran .valeur { font-family: var(--f-pixel); font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.cadran .etat { font-family: var(--f-pixel); font-size: 1.6rem; line-height: 1; letter-spacing: 0.05em; }
+.cadran .cause { font-family: var(--f-donnee); font-size: 0.75rem; color: var(--danger); min-height: 1.2em; }
+.radar svg { width: min(240px, 100%); height: auto; justify-self: center; }
+.mesures { display: grid; grid-template-columns: auto auto; gap: 0.3rem var(--pas-2); font-family: var(--f-donnee); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+.mesures dt { color: var(--pale); }
+.mesures dd { margin: 0; text-align: right; color: var(--texte); }
+.commandes .rangee { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.touche {
+  font-family: var(--f-donnee); font-size: 0.82rem; color: var(--texte);
+  background: var(--coque-2); border: 1px solid var(--rivet); border-bottom-width: 3px;
+  padding: 0.55rem 0.7rem; cursor: pointer; display: inline-flex; gap: 0.45rem; align-items: baseline;
+  touch-action: none; user-select: none;
+}
+.touche:hover { border-color: var(--hud); }
+.touche.appuyee, .touche:active { transform: translateY(2px); border-bottom-width: 1px; background: var(--rivet); }
+.touche .q { color: var(--essence); }
+.nuit-ligne { display: flex; align-items: center; gap: 0.6rem; font-size: 0.9rem; color: var(--pale); cursor: pointer; }
+.nuit-ligne input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.bascule { width: 38px; height: 20px; border: 1px solid var(--rivet); background: var(--coque-2); position: relative; flex: none; }
+.bascule::after { content: ""; position: absolute; top: 3px; left: 3px; width: 12px; height: 12px; background: var(--pale); transition: transform 0.15s; }
+.nuit-ligne input:checked + .bascule { border-color: var(--hud); }
+.nuit-ligne input:checked + .bascule::after { transform: translateX(18px); background: var(--hud); }
+.note { font-size: 0.85rem; color: var(--pale); }
+.duo-zombies { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--pas-3); margin-top: var(--pas-3); }
+@media (max-width: 760px) { .duo-zombies { grid-template-columns: minmax(0, 1fr); } }
+.encart { border-left: 3px solid var(--cape); padding: 0.2rem 0 0.2rem var(--pas-2); display: grid; gap: 0.4rem; }
+.encart h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 1.6rem; letter-spacing: 0.03em; line-height: 1; }
+.encart p { color: var(--pale); font-size: 0.96rem; }
+
+/* Station, donjons, carte */
+.grille-modules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--pas-3); }
+@media (max-width: 900px) { .grille-modules { grid-template-columns: minmax(0, 1fr); } }
+.module { display: grid; gap: var(--pas-2); align-content: start; min-width: 0; }
+.module h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 1.8rem; line-height: 1; letter-spacing: 0.03em; }
+.module p { color: var(--pale); font-size: 0.96rem; }
+.chaine { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; font-family: var(--f-donnee); font-size: 0.75rem; }
+.chaine span { border: 1px solid var(--rivet); padding: 0.15rem 0.45rem; color: var(--texte); }
+.chaine i { font-style: normal; color: var(--hud); }
+
+.carte-bloc { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: var(--pas-4); align-items: start; }
+@media (max-width: 860px) { .carte-bloc { grid-template-columns: minmax(0, 1fr); } }
+.reservoir { display: grid; gap: var(--pas-2); }
+.jauge-essence { height: 26px; border: 2px solid var(--essence); padding: 3px; background: var(--vide); }
+.jauge-essence div { height: 100%; background: repeating-linear-gradient(90deg, var(--essence) 0 10px, color-mix(in srgb, var(--essence) 70%, var(--vide)) 10px 12px); width: 36%; }
+.chiffres { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.5rem var(--pas-2); font-family: var(--f-donnee); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.chiffres span:nth-child(odd) { color: var(--pale); }
+.chiffres span:nth-child(even) { text-align: right; color: var(--essence); }
+
+/* Bestiaire : on change de matière, papier et encre */
+.bestiaire-bande { background: var(--parchemin); color: var(--encre); }
+.bestiaire-bande .entete-section p { color: color-mix(in srgb, var(--encre) 75%, var(--parchemin)); }
+.bestiaire-bande .hublot { border-color: var(--encre); background: var(--encre); }
+.bestiaire-bande .hublot::before, .bestiaire-bande .hublot::after { border-color: var(--cape); }
+.bestiaire-bande .hublot figcaption { color: var(--parchemin); }
+.bestiaire-bloc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--pas-4); align-items: center; }
+@media (max-width: 860px) { .bestiaire-bloc { grid-template-columns: minmax(0, 1fr); } }
+.mondes { display: grid; gap: var(--pas-2); }
+.monde { display: grid; gap: 0.2rem; border-bottom: 2px dotted color-mix(in srgb, var(--encre) 30%, var(--parchemin)); padding-bottom: var(--pas-2); }
+.monde h3 { font-family: var(--f-pixel); font-weight: normal; font-size: 1.5rem; letter-spacing: 0.04em; line-height: 1; }
+.monde p { font-size: 0.95rem; }
+
+/* Téléchargement */
+.depart { border-top: 2px solid var(--rivet); background: linear-gradient(180deg, var(--coque), var(--vide)); }
+.depart .gouttiere { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--pas-4); align-items: center; }
+@media (max-width: 760px) { .depart .gouttiere { grid-template-columns: minmax(0, 1fr); } }
+.depart h2 { font-family: var(--f-pixel); font-weight: normal; font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 0.95; }
+.depart p { color: var(--pale); margin-top: var(--pas-2); max-width: 55ch; }
+.fiche-technique { font-family: var(--f-donnee); font-size: 0.8rem; color: var(--pale); display: grid; grid-template-columns: auto auto; gap: 0.25rem var(--pas-3); margin-top: var(--pas-3); width: max-content; max-width: 100%; }
+.fiche-technique dt { color: var(--pale); }
+.fiche-technique dd { margin: 0; color: var(--texte); }
+footer { padding-block: var(--pas-3) var(--pas-4); font-family: var(--f-donnee); font-size: 0.75rem; color: var(--pale); }
+footer .gouttiere { display: flex; flex-wrap: wrap; gap: var(--pas-2); justify-content: space-between; }
+</style>
+
+</head>
+<body>
+<canvas id="ciel" aria-hidden="true"></canvas>
+
+<header class="bandeau">
+  <div class="gouttiere">
+    <a class="marque" href="#haut"><span class="pastille" aria-hidden="true"></span>Space Beggar</a>
+    <nav aria-label="Sections">
+      <a href="#premier-jour">Premier jour</a>
+      <a href="#planetes">Planètes</a>
+      <a href="#bruit">Bruit</a>
+      <a href="#station">Station</a>
+      <a href="#bestiaire">Bestiaire</a>
+    </nav>
+  </div>
+</header>
+
+<main id="haut">
+  <div class="ouverture">
+    <div class="gouttiere">
+      <div class="texte-ouverture">
+        <div>
+          <p class="surtitre">Exploration · survie · pixel art</p>
+          <h1>Space<br><span class="cape">Beggar</span></h1>
+          <p class="these">Votre station est en panne, votre réservoir presque vide. Fouillez les épaves, pillez les planètes, raffinez chaque goutte d'essence et repartez plus loin.</p>
+        </div>
+        <div>
+          <div class="actions">
+            <span class="bouton bientot" aria-disabled="true">Coming soon</span>
+          </div>
+          <p class="mention">Bientôt sur Windows</p>
+        </div>
+      </div>
+      <figure class="hublot">
+        <img src="img/foret.webp" width="1600" height="552" alt="Le mendiant, en cape rouge, au bord d'une rivière turquoise sur une planète forestière, entre prairie et bouleaux.">
+        <figcaption>Nyxith, planète forestière · 08:50 · biome prairie</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <hr class="trait-section">
+
+  <section id="premier-jour">
+    <div class="gouttiere">
+      <div class="entete-section">
+        <p class="surtitre">Le début de partie</p>
+        <h2>Le premier jour, sans une goutte d'essence</h2>
+        <p>On ne part pas tout de suite. La station doit d'abord tenir debout, et c'est à bord qu'on apprend à se battre, à fouiller et à fabriquer.</p>
+      </div>
+      <ol class="etapes">
+        <li><h3>Réveil en panne</h3><p>Deux pannes clignotent au contrôleur : <strong>la soute</strong> et <strong>la navigation</strong>.</p></li>
+        <li><h3>La soute condamnée</h3><p>Premier site à fouiller. Clic gauche pour frapper, trois coups enchaînés font un combo.</p></li>
+        <li><h3>Réparer</h3><p>Les coffres de la soute contiennent juste ce qu'il faut pour remettre la navigation en marche.</p></li>
+        <li><h3>Raffiner</h3><p>Le raffineur transforme <strong>carburant, pétrole, charbon, bois ou blé</strong> en bidons d'essence.</p></li>
+        <li><h3>Partir</h3><p>Versez les bidons dans le réservoir. La carte stellaire montre jusqu'où ils vous mènent.</p></li>
+      </ol>
+      <div class="duo">
+        <figure class="hublot">
+          <img src="img/soute.webp" width="1000" height="625" alt="Le joueur dans la soute condamnée, éclairée de rouge, devant une rampe à rayures jaunes et noires.">
+          <figcaption>Soute condamnée · site abandonné · tutoriel de combat</figcaption>
+        </figure>
+        <div class="manifeste">
+          <h3>Manifeste de la soute</h3>
+          <table>
+            <tbody>
+              <tr><td>Circuit de navigation</td><td>× 1</td></tr>
+              <tr><td>Plaque de métal</td><td>× 4</td></tr>
+              <tr><td>Bobine de cuivre</td><td>× 2</td></tr>
+            </tbody>
+          </table>
+          <p>Le contenu exact des coffres, réparti au hasard entre eux. Rien de plus : le reste, il faudra aller le chercher dehors.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="trait-section">
+
+  <section id="planetes">
+    <div class="gouttiere">
+      <div class="entete-section">
+        <p class="surtitre">Trois types de mondes</p>
+        <h2>Chaque planète a sa façon de vous tuer</h2>
+        <p>Les terrains sont générés par morceaux autour du joueur. Chaque type de monde a ses biomes, ses créatures et sa jauge de survie dans le coin de l'écran.</p>
+      </div>
+      <div class="planetes">
+        <article class="planete desert">
+          <figure class="hublot">
+            <img src="img/desert.webp" width="1200" height="491" alt="Dunes orangées d'une planète désertique, rochers de sable et un cactus.">
+            <figcaption>Koros, planète désertique · dunes dorées</figcaption>
+          </figure>
+          <div class="fiche">
+            <p class="type">Désertique</p>
+            <h3>Le sable garde vos traces</h3>
+            <ul>
+              <li><strong>Chaleur et soif</strong> : deux cadrans à surveiller, le soleil fait monter l'un et descendre l'autre.</li>
+              <li>Vos pas s'impriment dans le sable derrière vous.</li>
+              <li>Vers des sables, momies, scarabées colossaux et squelettes géants.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="planete neige">
+          <figure class="hublot">
+            <img src="img/neige.webp" width="1200" height="372" alt="Plaine enneigée au crépuscule rose, sapins et lac gelé turquoise.">
+            <figcaption>Mirayl, planète glaciale · plaine</figcaption>
+          </figure>
+          <div class="fiche">
+            <p class="type">Glaciale</p>
+            <h3>Le froid vient avec la nuit</h3>
+            <ul>
+              <li><strong>Température</strong> : le froid fait baisser le cadran. Un feu de camp ou un igloo vous réchauffe.</li>
+              <li>Lacs où nagent des poissons, filons de minerai sous la neige.</li>
+              <li>Loups de givre, golems de glace, crabes foreurs et un dragon de givre.</li>
+            </ul>
+          </div>
+        </article>
+        <article class="planete foret">
+          <figure class="hublot">
+            <img src="img/zombies.webp" width="1200" height="600" alt="Le joueur encerclé par une bande de pilleurs sur un sentier forestier, un zombie verdâtre approche par la gauche.">
+            <figcaption>Nyxith · une bande de trois pilleurs et un zombie, jauge de bruit à 94</figcaption>
+          </figure>
+          <div class="fiche">
+            <p class="type">Forestière</p>
+            <h3>Ce qui vit dans les bois vous entend</h3>
+            <ul>
+              <li><strong>Huit biomes</strong> : prairie, forêt, forêt profonde, fourrés, boulaie, bois d'automne, bosquet étrange, puis une plaine sans fin.</li>
+              <li>Lacs, rivières et gués. Sept essences de bois à abattre.</li>
+              <li>Poules, moutons, lapins, sangliers. Et des <strong>zombies</strong> attirés par le bruit, et des <strong>pilleurs</strong> en bandes de 1 à 4.</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <hr class="trait-section">
+
+  <section id="bruit">
+    <div class="gouttiere">
+      <div class="entete-section">
+        <p class="surtitre">Planètes forestières</p>
+        <h2>Faites moins de bruit</h2>
+        <p>Chaque geste remplit une jauge. Plus elle monte, plus les zombies vous entendent de loin et plus il en sort des bois. Essayez : ce sont les valeurs du jeu.</p>
+      </div>
+
+      <div class="console">
+        <div class="cadran" aria-live="polite">
+          <h3>Jauge de bruit</h3>
+          <svg id="cadran-svg" viewBox="0 0 200 170" role="img" aria-label="Jauge de bruit"></svg>
+          <span class="valeur" id="b-valeur">0</span>
+          <span class="etat" id="b-etat">Discret</span>
+          <span class="cause" id="b-cause"></span>
+        </div>
+        <div class="radar">
+          <h3>Ouïe d'un zombie</h3>
+          <svg id="radar-svg" viewBox="0 0 240 240" role="img" aria-label="Portée d'écoute des zombies autour du joueur"></svg>
+          <dl class="mesures">
+            <dt>Portée d'écoute</dt><dd id="b-portee">160 px</dd>
+            <dt>Zombies autour de vous</dt><dd id="b-zombies">2</dd>
+            <dt>Vitesse de traque</dt><dd id="b-vitesse">58 px/s</dd>
+          </dl>
+        </div>
+        <div class="commandes">
+          <h3>Agir</h3>
+          <p class="note">Maintenez pour marcher ou courir. La jauge ne redescend qu'après 1,2 s de silence, de 12 points par seconde.</p>
+          <div class="rangee">
+            <button class="touche maintien" data-taux="4" type="button" id="t-marcher">Marcher <span class="q">+4/s</span></button>
+            <button class="touche maintien" data-taux="22" type="button" id="t-courir">Courir <span class="q">+22/s</span></button>
+          </div>
+          <div class="rangee">
+            <button class="touche coup" data-q="10" type="button" id="t-frapper">Frapper <span class="q">+10</span></button>
+            <button class="touche coup" data-q="8" type="button" id="t-rouler">Rouler <span class="q">+8</span></button>
+            <button class="touche coup" data-q="12" type="button" id="t-piocher">Coup d'outil <span class="q">+12</span></button>
+            <button class="touche coup" data-q="25" type="button" id="t-arbre">Un arbre tombe <span class="q">+25</span></button>
+          </div>
+          <label class="nuit-ligne" for="t-nuit"><input type="checkbox" id="t-nuit"><span class="bascule" aria-hidden="true"></span>Il fait nuit (+3 zombies)</label>
+        </div>
+      </div>
+
+      <div class="duo-zombies">
+        <div class="encart">
+          <h3>Zombies</h3>
+          <p>Ils errent à 26 px/s et vous entendent à 160 px quand vous êtes discret, jusqu'à 1500 px dans le vacarme. Ceux qui vous entendent marchent droit sur vous, d'autant plus vite que la jauge est haute. Toutes les cinq secondes, d'autres sortent des bois hors de vue, trente au plus.</p>
+        </div>
+        <div class="encart">
+          <h3>Pilleurs</h3>
+          <p>Ils rôdent en bandes de 1 à 4 derrière un chef, vous repèrent à 520 px (plus quand vous faites du bruit), chargent et vous encerclent. Ils laissent de la ferraille, parfois un bidon d'essence.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="trait-section">
+
+  <section id="station">
+    <div class="gouttiere">
+      <div class="entete-section">
+        <p class="surtitre">À bord et ailleurs</p>
+        <h2>La station, les épaves, la carte</h2>
+        <p>Entre deux planètes, on agrandit la station, on décrypte des cassettes et on calcule la prochaine escale.</p>
+      </div>
+      <div class="grille-modules">
+        <div class="module">
+          <figure class="hublot">
+            <img src="img/ateliers.webp" width="1200" height="391" alt="Salle de cuisine et de chimie de la station : alambic, fioles, four à pain, fourneau.">
+          </figure>
+          <h3>Ateliers</h3>
+          <p>Cuisine, chimie, recyclage : chaque salle a ses ateliers et son menu. On débloque les recettes en progressant.</p>
+          <p class="chaine"><span>modules</span><i>→</i><span>ateliers</span><i>→</i><span>connaissances</span><i>→</i><span>recettes</span></p>
+        </div>
+        <div class="module">
+          <figure class="hublot">
+            <img src="img/station_abandonnee.webp" width="1200" height="588" alt="Combat contre deux tourelles dans une station abandonnée aux murs violets.">
+          </figure>
+          <h3>Sites abandonnés</h3>
+          <p>Stations et souterrains générés sur plusieurs étages : portes, pièges, gardiens, salles spéciales et modificateurs affichés sur la fiche du site avant d'y aller.</p>
+          <p class="chaine"><span>cassette</span><i>→</i><span>décrypteur</span><i>→</i><span>archive, signal marchand ou journal de colon</span></p>
+        </div>
+        <div class="module" id="carte">
+          <figure class="hublot">
+            <img src="img/carte.webp" width="1200" height="540" alt="Carte stellaire de la galaxie Cygnum : systèmes en orbite, la station flottant dans le vide, jauge d'essence à 180 sur 500.">
+          </figure>
+          <h3>Carte stellaire</h3>
+          <p>Un anneau marque votre portée. Les planètes au-delà sont grisées, et la station flotte dans le vide tant qu'elle n'est en orbite autour de rien.</p>
+        </div>
+      </div>
+
+      <div class="carte-bloc" style="margin-top: var(--pas-5);">
+        <div class="entete-section" style="margin-bottom: 0;">
+          <p class="surtitre">Le réservoir</p>
+          <h2>Chaque voyage se paie en essence</h2>
+          <p>L'essence se raffine à bord, se trouve sur les pilleurs, se verse au contrôleur de la station. Le réservoir dessiné au contrôleur et le bandeau de la carte disent la même chose : combien il en reste et jusqu'où ça mène.</p>
+        </div>
+        <div class="reservoir manifeste">
+          <h3>Essence : 180 / 500</h3>
+          <div class="jauge-essence" role="img" aria-label="Réservoir rempli à 36 %"><div></div></div>
+          <div class="chiffres">
+            <span>Capacité du réservoir</span><span>500</span>
+            <span>Changer de galaxie</span><span>300</span>
+            <span>Consommation par unité de distance</span><span>0,025</span>
+            <span>Sources raffinables</span><span>5</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bestiaire-bande" id="bestiaire">
+    <div class="gouttiere">
+      <div class="bestiaire-bloc">
+        <div>
+          <div class="entete-section">
+            <p class="surtitre" style="color: var(--cape);">Carnet de terrain</p>
+            <h2>Le bestiaire</h2>
+            <p>Un carnet à spirale où chaque créature croisée prend sa photo. Celles qu'on n'a pas encore vues restent des silhouettes.</p>
+          </div>
+          <div class="mondes">
+            <div class="monde"><h3>Planètes glaciales</h3><p>Crabe foreur, anguille-fil, spectre thermique, mimic-sapin, loup de givre, golem de glace, dragon de givre.</p></div>
+            <div class="monde"><h3>Planètes désertiques</h3><p>Ver des sables, momie, scarabée du temple, scarabée colossal, squelette géant.</p></div>
+            <div class="monde"><h3>Planètes forestières</h3><p>Poule, mouton, lapin, sanglier, zombie, pilleur.</p></div>
+            <div class="monde"><h3>Sites abandonnés</h3><p>Drone de sécurité, tourelle, colon errant, moissonneuse folle, larves et reine de la soute.</p></div>
+          </div>
+        </div>
+        <figure class="hublot">
+          <img src="img/bestiaire.webp" width="1100" height="744" alt="Le bestiaire ouvert sur la page Créatures, onglet des planètes glaciales, fiche du crabe foreur.">
+          <figcaption>Fiches rangées par planète, onglets teintés</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="depart" id="telecharger">
+    <div class="gouttiere">
+      <div>
+        <h2>Prêt à mendier ?</h2>
+        <p>Space Beggar est en cours de développement. La station se répare encore, les planètes se peuplent : le départ approche.</p>
+        <dl class="fiche-technique">
+          <dt>Système</dt><dd>Windows</dd>
+          <dt>Moteur</dt><dd>Godot 4</dd>
+          <dt>Langues</dt><dd>français, anglais</dd>
+        </dl>
+      </div>
+      <div class="actions">
+        <span class="bouton bientot" aria-disabled="true">Coming soon</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="gouttiere">
+    <span>Space Beggar · un jeu de clemlkc</span>
+    <span>Captures prises en jeu, en cours de développement</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var reduit = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // --- Ciel : étoiles fixes, tracées une fois ---
+  var ciel = document.getElementById("ciel");
+  function tracerCiel() {
+    var r = window.devicePixelRatio || 1;
+    var l = window.innerWidth, h = window.innerHeight;
+    ciel.width = l * r; ciel.height = h * r;
+    var c = ciel.getContext("2d");
+    c.scale(r, r);
+    var graine = 7;
+    function hasard() { graine = (graine * 16807) % 2147483647; return graine / 2147483647; }
+    for (var i = 0; i < Math.round(l * h / 5200); i++) {
+      var g = hasard();
+      c.fillStyle = g > 0.96 ? "rgba(242,165,59,0.7)" : g > 0.9 ? "rgba(79,216,196,0.55)" : "rgba(219,227,236," + (0.15 + hasard() * 0.35) + ")";
+      var t = g > 0.97 ? 2 : 1;
+      c.fillRect(Math.floor(hasard() * l), Math.floor(hasard() * h), t, t);
+    }
+  }
+  tracerCiel();
+  window.addEventListener("resize", tracerCiel);
+
+  // --- Jauge de bruit (valeurs de scripts/planete/bruit_joueur.gd) ---
+  var MAX = 100, RETOMBEE = 12, SILENCE = 1.2;
+  var ETATS = [[75, "Vacarme"], [45, "Bruyant"], [15, "Audible"], [0, "Discret"]];
+  var CALME = [0.45, 0.85, 0.75], VACARME = [1.0, 0.35, 0.25];
+  var valeur = 0, silenceJusqua = 0, taux = 0, nuit = false;
+  var NS = "http://www.w3.org/2000/svg";
+
+  function couleur(t) {
+    var c = CALME.map(function (v, i) { return Math.round(255 * (v + (VACARME[i] - v) * t)); });
+    return "rgb(" + c.join(",") + ")";
+  }
+  function el(nom, attrs, parent) {
+    var e = document.createElementNS(NS, nom);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  // Cadran : 20 segments en arc, comme le HUD de survie
+  var cadran = document.getElementById("cadran-svg");
+  var SEGMENTS = 20, segments = [];
+  var debut = Math.PI * 0.8, fin = Math.PI * 2.2;
+  for (var i = 0; i < SEGMENTS; i++) {
+    var a0 = debut + (fin - debut) * (i + 0.12) / SEGMENTS;
+    var a1 = debut + (fin - debut) * (i + 0.88) / SEGMENTS;
+    var R = 80, r = 62, cx = 100, cy = 95;
+    var d = "M" + (cx + R * Math.cos(a0)) + " " + (cy + R * Math.sin(a0)) +
+      " A" + R + " " + R + " 0 0 1 " + (cx + R * Math.cos(a1)) + " " + (cy + R * Math.sin(a1)) +
+      " L" + (cx + r * Math.cos(a1)) + " " + (cy + r * Math.sin(a1)) +
+      " A" + r + " " + r + " 0 0 0 " + (cx + r * Math.cos(a0)) + " " + (cy + r * Math.sin(a0)) + " Z";
+    segments.push(el("path", { d: d, fill: "#2a3648" }, cadran));
+  }
+  // L'oreille au centre
+  var oreille = el("g", { fill: "none", stroke: "#dbe3ec", "stroke-width": "4", "stroke-linecap": "square" }, cadran);
+  el("path", { d: "M88 104 A16 16 0 1 1 110 86 Q110 98 100 104 Q96 108 96 114" }, oreille);
+  el("path", { d: "M96 92 A6 6 0 1 1 104 88" }, oreille);
+  var ondes = [];
+  for (var o = 0; o < 3; o++) {
+    ondes.push(el("path", { d: "M" + (118 + o * 8) + " " + (78 - o * 5) + " A" + (22 + o * 8) + " " + (22 + o * 8) + " 0 0 1 " + (118 + o * 8) + " " + (112 + o * 5), fill: "none", "stroke-width": "3", stroke: "#2a3648" }, cadran));
+  }
+
+  // Radar : le joueur au centre, l'anneau d'écoute à l'échelle de 1500 px
+  var radar = document.getElementById("radar-svg");
+  var CX = 120, RAYON_MAX = 112, PORTEE_MAX = 1500;
+  el("circle", { cx: CX, cy: CX, r: RAYON_MAX, fill: "none", stroke: "#2a3648", "stroke-dasharray": "2 4" }, radar);
+  el("circle", { cx: CX, cy: CX, r: RAYON_MAX / 2, fill: "none", stroke: "#2a3648", "stroke-dasharray": "2 4" }, radar);
+  var etiquette = el("text", { x: CX, y: CX - RAYON_MAX + 12, "text-anchor": "middle", fill: "#8d9bb0", "font-size": "9", "font-family": "IBM Plex Mono, monospace" }, radar);
+  etiquette.textContent = "1500 px";
+  var anneau = el("circle", { cx: CX, cy: CX, r: 12, fill: "rgba(79,216,196,0.10)", stroke: "#4fd8c4", "stroke-width": "2" }, radar);
+  var groupeZombies = el("g", {}, radar);
+  el("rect", { x: CX - 4, y: CX - 4, width: 8, height: 8, fill: "#cf4a2e" }, radar);
+
+  // Positions fixes des zombies (angle, distance relative)
+  var places = [];
+  var g = 11;
+  function h() { g = (g * 16807) % 2147483647; return g / 2147483647; }
+  for (var z = 0; z < 12; z++) places.push([h() * Math.PI * 2, 0.55 + h() * 0.42]);
+  var marques = places.map(function () {
+    return el("rect", { width: 6, height: 6, fill: "#8fbf5a", opacity: "0" }, groupeZombies);
+  });
+
+  var eValeur = document.getElementById("b-valeur"), eEtat = document.getElementById("b-etat"),
+      eCause = document.getElementById("b-cause"), ePortee = document.getElementById("b-portee"),
+      eZombies = document.getElementById("b-zombies"), eVitesse = document.getElementById("b-vitesse");
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function afficher() {
+    var n = valeur / MAX;
+    var allumes = Math.round(n * SEGMENTS);
+    segments.forEach(function (s, i) { s.setAttribute("fill", i < allumes ? couleur(i / (SEGMENTS - 1)) : "#2a3648"); });
+    ondes.forEach(function (s, i) { s.setAttribute("stroke", n > (i + 1) * 0.25 ? couleur(n) : "#2a3648"); });
+    eValeur.textContent = Math.round(valeur);
+    eValeur.style.color = couleur(n);
+    var etat = "Discret";
+    for (var i = 0; i < ETATS.length; i++) if (valeur >= ETATS[i][0]) { etat = ETATS[i][1]; break; }
+    eEtat.textContent = etat;
+    eEtat.style.color = couleur(n);
+    eCause.textContent = valeur >= 45 ? "▼ Zombies attirés" : "";
+
+    var portee = lerp(160, PORTEE_MAX, n);
+    var rayon = RAYON_MAX * portee / PORTEE_MAX;
+    anneau.setAttribute("r", rayon.toFixed(1));
+    anneau.setAttribute("stroke", couleur(n));
+    ePortee.textContent = Math.round(portee) + " px";
+
+    var voulus = Math.round(lerp(2, 9, n) + (nuit ? 3 : 0));
+    eZombies.textContent = voulus;
+    marques.forEach(function (m, i) {
+      var p = places[i];
+      m.setAttribute("x", (CX + Math.cos(p[0]) * p[1] * RAYON_MAX - 3).toFixed(1));
+      m.setAttribute("y", (CX + Math.sin(p[0]) * p[1] * RAYON_MAX - 3).toFixed(1));
+      var dans = p[1] * PORTEE_MAX <= portee;
+      m.setAttribute("opacity", i < voulus ? (dans ? "1" : "0.45") : "0");
+      m.setAttribute("fill", dans ? "#ff5a40" : "#8fbf5a");
+    });
+    eVitesse.textContent = Math.round(lerp(58, 92, n)) + " px/s";
+  }
+
+  function ajouter(q) {
+    valeur = Math.min(MAX, valeur + q);
+    silenceJusqua = performance.now() / 1000 + SILENCE;
+  }
+
+  var avant = performance.now();
+  function boucle(maintenant) {
+    var dt = Math.min(0.1, (maintenant - avant) / 1000);
+    avant = maintenant;
+    if (taux > 0) ajouter(taux * dt);
+    if (maintenant / 1000 >= silenceJusqua) valeur = Math.max(0, valeur - RETOMBEE * dt);
+    afficher();
+    requestAnimationFrame(boucle);
+  }
+
+  document.querySelectorAll(".touche.coup").forEach(function (b) {
+    b.addEventListener("click", function () { ajouter(parseFloat(b.dataset.q)); });
+  });
+  document.querySelectorAll(".touche.maintien").forEach(function (b) {
+    var t = parseFloat(b.dataset.taux);
+    function lacher() { if (taux === t) taux = 0; b.classList.remove("appuyee"); }
+    b.addEventListener("pointerdown", function (e) { taux = t; b.classList.add("appuyee"); try { b.setPointerCapture(e.pointerId); } catch (x) {} });
+    b.addEventListener("pointerup", lacher);
+    b.addEventListener("pointercancel", lacher);
+    b.addEventListener("keydown", function (e) { if ((e.key === " " || e.key === "Enter") && !e.repeat) { taux = t; b.classList.add("appuyee"); e.preventDefault(); } });
+    b.addEventListener("keyup", function (e) { if (e.key === " " || e.key === "Enter") lacher(); });
+    b.addEventListener("blur", lacher);
+  });
+  document.getElementById("t-nuit").addEventListener("change", function (e) { nuit = e.target.checked; });
+
+  // État de départ parlant : un arbre vient de tomber
+  valeur = 38;
+  silenceJusqua = performance.now() / 1000 + (reduit ? 6 : 2.5);
+  afficher();
+  requestAnimationFrame(boucle);
+})();
+</script>
+
+</body>
+</html>
